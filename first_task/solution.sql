@@ -1,5 +1,4 @@
 -- #1 Найти названия всех фильмов снятых 'Steven Spielberg', отсортировать по алфавиту.
-
 SELECT title
 FROM movie
 WHERE director = 'Steven Spielberg'
@@ -99,7 +98,7 @@ ORDER BY name, film, stars;
 SELECT rw.name AS col
 FROM reviewer AS rw
 UNION ALL SELECT m.title AS col
-      FROM movie AS m
+          FROM movie AS m
 ORDER BY col;
 
 -- #11 Выберите названия всех фильмов, по алфавиту, которым не поставил оценку 'Chris Jackson'.
@@ -157,8 +156,8 @@ ORDER BY director;
 -- #16 Для всех случаев когда один эксперт оценивал фильм более одного раза и указал лучший рейтинг второй раз,
 --  выведите имя эксперта и название фильма, отсортировав по имени, затем по названию фильма.
 SELECT
-    rv.name as expert,
-    m.title as film
+  rv.name AS expert,
+  m.title AS film
 FROM movie AS m
   JOIN rating AS rt1 USING (mid)
   JOIN rating AS rt2 ON rt1.rid = rt2.rid AND rt2.ratingdate > rt1.ratingdate
