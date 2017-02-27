@@ -111,4 +111,27 @@ WHERE NOT exists(SELECT *
                  FROM reviewer
                  WHERE rw.name = 'Chris Jackson');
 
+-- #12 Для всех пар экспертов, если оба оценили один и тот же фильм, выбрать имена обоих. Устранить дубликаты,
+--  проверить отсутствие пар самих с собой и включать каждую пару только 1 раз. Выбрать имена в паре в алфавитном
+--  порядке и отсортировать по именам.
+SELECT DISTINCT
+  rv1.name,
+  rv2.name
+FROM reviewer AS rv1
+  JOIN rating AS r1 USING (rid)
+  JOIN rating AS r2 ON r1.mid = r2.mid
+  JOIN reviewer AS rv2 ON r2.rid = rv2.rid
+WHERE rv1.name < rv2.name
+GROUP BY rv1.name, rv2.name
+ORDER BY rv1.name, rv2.name;
+
+-- #13 Выбрать список названий фильмов и средний рейтинг, от самого низкого до самого высокого.
+--  Если два или более фильмов имеют одинаковый средний балл, перечислить их в алфавитном порядке.
+SELECT
+  m.title      AS film,
+  avg(r.stars) AS rating
+FROM movie AS m
+  LEFT JOIN rating AS r USING (mid)
+GROUP BY film
+ORDER BY rating, film;
 
