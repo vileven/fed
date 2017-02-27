@@ -98,7 +98,7 @@ ORDER BY name, film, stars;
 -- #10 Выберите всех экспертов и названия фильмов в едином списке в алфавитном порядке.
 SELECT rw.name AS col
 FROM reviewer AS rw
-UNION SELECT m.title AS col
+UNION ALL SELECT m.title AS col
       FROM movie AS m
 ORDER BY col;
 
@@ -134,4 +134,35 @@ FROM movie AS m
   LEFT JOIN rating AS r USING (mid)
 GROUP BY film
 ORDER BY rating, film;
+
+-- #14 Найти имена всех экспертов, которые поставили три или более оценок, сортировка по алфавиту.
+SELECT rv.name AS name
+FROM reviewer AS rv
+  JOIN rating AS rt USING (rid)
+GROUP BY rv.name
+HAVING count(rt.rid) >= 3
+ORDER BY name;
+
+-- #15 Некоторые режиссеры сняли более чем один фильм. Для всех таких режиссеров,
+--  выбрать названия всех фильмов режиссера, его имя. Сортировка по имени режиссера.
+--  Пример: Titanic,Avatar | James Cameron
+SELECT
+  string_agg(m.title, ','),
+  m.director AS director
+FROM movie AS m
+GROUP BY director
+HAVING count(*) > 1
+ORDER BY director;
+
+-- #16 Для всех случаев когда один эксперт оценивал фильм более одного раза и указал лучший рейтинг второй раз,
+--  выведите имя эксперта и название фильма, отсортировав по имени, затем по названию фильма.
+SELECT
+    rv.name as expert,
+    m.title as film
+FROM movie AS m
+  JOIN rating AS rt1 USING (mid)
+  JOIN rating AS rt2 ON rt1.rid = rt2.rid AND rt2.ratingdate > rt1.ratingdate
+                        AND rt2.stars > rt1.stars AND rt1.mid = rt2.mid
+  JOIN reviewer AS rv ON rv.rid = rt2.rid
+ORDER BY expert, film;
 
