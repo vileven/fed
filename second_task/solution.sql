@@ -39,6 +39,56 @@ SELECT
   h.grade AS class
 FROM highschooler AS h
   LEFT JOIN likes as l ON h.id IN (l.id1, l.id2)
-WHERE l.id1 IS NULL OR l.id2 IS NULL
+WHERE l.id1 IS NULL AND l.id2 IS NULL
 GROUP BY h.name, class
 ORDER BY class, h.name;
+
+-- #5 Для каждой ситуации, когда студенту A нравится студент B, но B никто не нравится, вывести имена и классы A и B.
+SELECT
+  h1.name as A,
+  h1.grade AS class,
+  h2.name AS B,
+  h2.grade AS class
+FROM highschooler AS h1
+  JOIN likes AS l1 ON h1.id = l1.id1
+  JOIN highschooler AS h2 ON l1.id2 = h2.id
+  LEFT JOIN likes AS l2 ON h2.id = l2.id1
+WHERE l2.id1 IS NULL
+
+-- #6 Найти имена и классы, которые имеют друзей только в том же классе. Вернуть результат,
+--  отсортированный по классу, затем имени в классе.
+SELECT
+  h1.name,
+  h1.grade AS class
+FROM highschooler AS h1
+  JOIN friend AS f ON f.id1 = h1.id
+  LEFT JOIN highschooler AS h2 ON f.id2 = h2.id AND h2.grade != h1.grade
+WHERE h2.id IS NULL
+GROUP BY h1.name, class
+ORDER BY class, h1.name;
+
+-- #7 Для каждого студента A, которому нравится студент B, и они не друзья, найти есть ли у них общий друг.
+--  Для каждой такой тройки вернуть имя и класс A, B, и C.
+SELECT
+  h1.name AS A,
+  h1.grade,
+  h2.name AS B,
+  h2.grade,
+  h3.name AS C,
+  h3.grade
+FROM highschooler AS h1
+  JOIN likes AS l ON l.id1 = h1.id
+  JOIN highschooler AS h2 ON l.id2 = h2.id
+  JOIN friend AS f1 ON f1.id1 = h2.id AND f1.id2 != h1.id
+  JOIN friend AS f2 ON f2.id1 = f1.id2 AND f2.id2 = h1.id
+  JOIN highschooler AS h3 ON f2.id1 = h3.id ;
+
+
+
+
+
+
+
+
+
+
